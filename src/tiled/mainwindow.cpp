@@ -38,6 +38,8 @@
 #include "createpolygonobjecttool.h"
 #include "createpolylineobjecttool.h"
 #include "documentmanager.h"
+#include "dungeon.h"
+#include "dungeondialog.h"
 #include "editpolygontool.h"
 #include "eraser.h"
 #include "erasetiles.h"
@@ -431,6 +433,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     connect(mUi->actionZoomNormal, SIGNAL(triggered()), SLOT(zoomNormal()));
 
     connect(mUi->actionNewTileset, SIGNAL(triggered()), SLOT(newTileset()));
+    connect(mUi->actionRandomDungeon, SIGNAL(triggered()),SLOT(generateDungeon()));
     connect(mUi->actionAddExternalTileset, SIGNAL(triggered()),
             SLOT(addExternalTileset()));
     connect(mUi->actionResizeMap, SIGNAL(triggered()), SLOT(resizeMap()));
@@ -478,6 +481,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     setThemeIcon(mUi->actionZoomOut, "zoom-out");
     setThemeIcon(mUi->actionZoomNormal, "zoom-original");
     setThemeIcon(mUi->actionNewTileset, "document-new");
+    setThemeIcon(mUi->actionRandomDungeon, "random-dungeon");
     setThemeIcon(mUi->actionResizeMap, "document-page-setup");
     setThemeIcon(mUi->actionMapProperties, "document-properties");
     setThemeIcon(mUi->actionDocumentation, "help-contents");
@@ -1137,6 +1141,11 @@ void MainWindow::reload()
         mDocumentManager->reloadCurrentDocument();
 }
 
+void MainWindow::generateDungeon(){
+    DungeonDialog DungeonDialog(this);
+    DungeonDialog.exec();
+}
+
 void MainWindow::closeFile()
 {
     if (confirmSave(mDocumentManager->currentDocument()))
@@ -1621,6 +1630,7 @@ void MainWindow::updateActions()
     mUi->actionPasteInPlace->setEnabled(clipboardHasMap);
     mUi->actionDelete->setEnabled(canCopy);
     mUi->actionNewTileset->setEnabled(map);
+    mUi->actionRandomDungeon->setEnabled(map);
     mUi->actionAddExternalTileset->setEnabled(map);
     mUi->actionResizeMap->setEnabled(map);
     mUi->actionOffsetMap->setEnabled(map);

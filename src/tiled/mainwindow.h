@@ -47,11 +47,11 @@ class TileLayer;
 class Terrain;
 
 namespace Internal {
-
 class AutomappingManager;
 class BucketFillTool;
 class CommandButton;
 class DocumentManager;
+class Dungeon;
 class LayerDock;
 class MapDocumentActionHandler;
 class MapScene;
@@ -118,6 +118,7 @@ protected:
     void dropEvent(QDropEvent *) override;
 
 private slots:
+    void generateDungeon();
     void newMap();
     void openFile();
     bool saveFile();

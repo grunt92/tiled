@@ -41,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>28</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -107,6 +107,8 @@
     <addaction name="separator"/>
     <addaction name="actionAutoMap"/>
     <addaction name="actionAutoMapWhileDrawing"/>
+    <addaction name="separator"/>
+    <addaction name="actionRandomDungeon"/>
     <addaction name="separator"/>
     <addaction name="actionMapProperties"/>
    </widget>
@@ -544,6 +546,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+V</string>
+   </property>
+  </action>
+  <action name="actionRandomDungeon">
+   <property name="text">
+    <string>Generate Random Dungeon</string>
    </property>
   </action>
  </widget>
