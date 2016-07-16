@@ -658,6 +658,7 @@ MainWindow::~MainWindow()
     delete mUi;
 }
 
+
 void MainWindow::commitData(QSessionManager &manager)
 {
     // Play nice with session management and cancel shutdown process when user
@@ -1142,7 +1143,7 @@ void MainWindow::reload()
 }
 
 void MainWindow::generateDungeon(){
-    DungeonDialog DungeonDialog(this);
+    DungeonDialog DungeonDialog(this, this, mTerrainDock);
     DungeonDialog.exec();
 }
 

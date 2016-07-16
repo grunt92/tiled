@@ -104,6 +104,7 @@ public:
      */
     void openLastFiles();
 
+
 public slots:
     bool openFile(const QString &fileName);
 

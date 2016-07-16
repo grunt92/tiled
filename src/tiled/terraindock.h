@@ -65,6 +65,7 @@ public:
      * Returns the currently selected tile.
      */
     Terrain *currentTerrain() const { return mCurrentTerrain; }
+    TerrainView *getTerrainView(){return mTerrainView;}
 
 signals:
     /**
