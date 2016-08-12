@@ -6,6 +6,7 @@
 #include "mainwindow.h"
 #include "terraindock.h"
 #include "terrainview.h"
+#include "mapdocument.h"
 
 namespace Tiled {
 namespace Internal {
@@ -20,7 +21,12 @@ private:
     MainWindow *mainWindow;
     TerrainDock *terrainDock;
     TerrainView *terrainView;
-    //Ui::DungeonDialog *mUi;
+    Ui::DungeonDialog *mUi;
+    MapDocument *mapDocument;
+private slots:
+    void generateDungeon();
+    void cancel();
+    void checkOk();
 
 };
 

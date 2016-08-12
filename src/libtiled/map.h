@@ -305,6 +305,7 @@ public:
      */
     int indexOfTileset(const SharedTileset &tileset) const;
 
+
     /**
      * Removes the tileset at \a index from this map.
      *
@@ -372,7 +373,7 @@ public:
     void setNextObjectId(int nextId);
     int nextObjectId() const;
     int takeNextObjectId();
-
+    QVector<SharedTileset> getTileSets(){return mTilesets;}
 private:
     void adoptLayer(Layer *layer);
 

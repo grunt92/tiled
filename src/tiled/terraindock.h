@@ -66,6 +66,7 @@ public:
      */
     Terrain *currentTerrain() const { return mCurrentTerrain; }
     TerrainView *getTerrainView(){return mTerrainView;}
+    MapDocument *getMapDocument(){return mMapDocument;}
 
 signals:
     /**

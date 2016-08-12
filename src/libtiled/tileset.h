@@ -178,6 +178,8 @@ public:
     void setLoaded(bool loaded);
     bool loaded() const;
     bool imageLoaded() const;
+    QList<Terrain*> getTerrains(){return mTerrainTypes;}
+
 
 private:
     void updateTileSize();

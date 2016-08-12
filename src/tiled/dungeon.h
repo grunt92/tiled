@@ -2,35 +2,31 @@
 #define DUNGEON_H
 
 #include <QMap>
+#include <QString>
+#include "terraindock.h"
+#include "mapdocument.h"
+#include "mainwindow.h"
 
-namespace tiled{
-
-class ImageLayer;
-class mapobject;
-class layer;
-class ObjectGroup;
-class Tile;
-class TileLayer;
-class Tileset;
-
-}
+namespace Tiled{
 
 namespace Internal{
 	
-	class AbstractTool;
-	class MapDocument;
-	class MapObjectItem;
-	class MapScene;
-	class ObjectGroupItem;
-	class ObjectSelectionItem;
-}
 
 class dungeon{
 	
 	public:
-	dungeon();
-	~dungeon();
-	void generateDungeon();
-	
+    dungeon(MainWindow *mw = nullptr, TerrainDock *td = nullptr, int numberOfRooms = 0);
+    ~dungeon();
+    void generateDungeon(int numberOfRooms);
+    void generateRooms(int numberOfRooms);
+    void generatePath();
+
+    private:
+    int width, height;
+    QString floor, wall;
+
+
 };
+}
+}
 #endif 
