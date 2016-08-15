@@ -6,6 +6,7 @@
 #include "tileset.h"
 #include "terrain.h"
 #include "dungeondialog.h"
+#include "dungeon.h"
 
 #include <QCoreApplication>
 #include <QDesktopServices>
@@ -34,10 +35,13 @@ DungeonDialog::DungeonDialog(QWidget *parent, MainWindow *mw, TerrainDock *td): 
     connect(mUi->floorBox,SIGNAL(currentTextChanged(QString)),SLOT(checkOK()));
     connect(mUi->wallBox,SIGNAL(currentTextChanged(QString)),SLOT(checkOk()));
     mUi->OK->setEnabled(false);
+    checkOk();
 }
 
 void DungeonDialog::generateDungeon(){
-
+    dungeon d(100,100);
+    d.generate(30);
+    d.print();
 }
 
 void DungeonDialog::cancel(){
