@@ -13,18 +13,18 @@ namespace Internal{
 	
 
 class dungeon{
-	
+
 	public:
-    dungeon(MainWindow *mw = nullptr, TerrainDock *td = nullptr, int numberOfRooms = 0);
+    dungeon (int width, int height);
     ~dungeon();
-    void generateDungeon(int numberOfRooms);
-    void generateRooms(int numberOfRooms);
-    void generatePath();
+    int getWidth(){return width;}
+    int getHeight(){return height;}
+    int get(int x, int y);
+    void set(int x, int y, int value);
 
     private:
     int width, height;
-    QString floor, wall;
-
+    std::vector<int> tiles;
 
 };
 }
