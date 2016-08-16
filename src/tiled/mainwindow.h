@@ -103,6 +103,10 @@ public:
      * Attempt to open the previously opened file.
      */
     void openLastFiles();
+    TerrainBrush* getBrush(){
+        return mTerrainBrush;
+    }
+
 
 
 public slots:

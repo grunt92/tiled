@@ -1,11 +1,12 @@
 #include "dungeon.h"
-
 #include <random>
 #include <vector>
 #include <iostream>
-
+#include "terrainbrush.h"
+#include "mainwindow.h"
+#include "terrain.h"
 using namespace  Tiled::Internal;
-namespace
+namespace Tiled
 {
     std::random_device rd;
     std::mt19937 mt(rd());
@@ -37,9 +38,9 @@ struct Rect
 
  enum Tile
     {
-        Empty		= ' ',
-        Floor		= '.',
-        Wall		= '#',
+        Empty		= 0,
+        Floor		= 1,
+        Wall		= 2,
     };
 
     enum Direction
@@ -50,14 +51,18 @@ struct Rect
         Right,
         Counter
     };
-
-    dungeon::dungeon(int width, int height)
+    dungeon::dungeon(int width, int height, MainWindow* mw, Tiled::Terrain* floor, Tiled::Terrain* wall)
         : _width(width)
         , _height(height)
+        , mw(mw)
         , _tiles(width * height, Empty)
         , _rooms()
         , _exits()
+        , floor(floor)
+        , wall(wall)
     {
+        tb = mw->getBrush();
+
     }
 
     void dungeon::generate(int maxFeatures)
@@ -79,26 +84,17 @@ struct Rect
             }
         }
 
-        for (char& tile : _tiles)
+        for (int& tile : _tiles)
         {
             if (tile == Empty)
-                tile = '.';
+                tile = 0;
             else if (tile == Floor)
-                tile = ' ';
+                tile = 1;
         }
     }
 
-    void dungeon::print()
-    {
-        for (int y = 0; y < _height; ++y)
-        {
-            for (int x = 0; x < _width; ++x)
-                std::cout << getTile(x, y);
 
-            std::cout << std::endl;
-        }
-    }
-    char dungeon::getTile(int x, int y) const
+    int dungeon::getTile(int x, int y) const
     {
         if (x < 0 || y < 0 || x >= _width || y >= _height)
             return Empty;
@@ -106,7 +102,7 @@ struct Rect
         return _tiles[x + y * _width];
     }
 
-    void dungeon::setTile(int x, int y, char tile)
+    void dungeon::setTile(int x, int y, int tile)
     {
         _tiles[x + y * _width] = tile;
     }
@@ -223,7 +219,7 @@ struct Rect
 
 
 
-    bool dungeon::placeRect(const Rect& rect, char tile)
+    bool dungeon::placeRect(const Rect& rect, int tile)
     {
         if (rect.x < 1 || rect.y < 1 || rect.x + rect.width > _width - 1 || rect.y + rect.height > _height - 1)
             return false;
@@ -245,6 +241,18 @@ struct Rect
             }
 
         return true;
+    }
+
+    void dungeon::print()
+    {
+        for (float y = 0; y < _height; ++y){
+            for(float x = 0; x <_width; ++x){
+                if (getTile(x,y)==1)
+                tb->drawByCoordinate(x,y,floor);
+                else if(getTile(x,y)==2)
+                tb->drawByCoordinate(x,y,wall);
+            }
+        }
     }
 
 

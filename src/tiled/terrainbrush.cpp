@@ -32,6 +32,7 @@
 #include "tileset.h"
 #include "tile.h"
 #include "terrain.h"
+#include <iostream>
 
 #include <math.h>
 #include <QVector>
@@ -127,6 +128,8 @@ void TerrainBrush::mousePressed(QGraphicsSceneMouseEvent *event)
             capture();
     }
 }
+
+
 
 void TerrainBrush::mouseReleased(QGraphicsSceneMouseEvent *event)
 {
@@ -528,4 +531,16 @@ void TerrainBrush::updateBrush(QPoint cursorPos, const QVector<QPoint> *list)
 
     delete[] checked;
     delete[] newTerrain;
+}
+
+void TerrainBrush::drawByCoordinate(float x, float y, Terrain *terrain){
+    setTerrain(terrain);
+    mPaintX = x;
+    mPaintY = y;
+    mLineReferenceX = mPaintX;
+    mLineReferenceY = mPaintY;
+    QPoint  p(x,y);
+    const QVector<QPoint> lineList(1,p);
+    updateBrush(p, &lineList);
+    doPaint(true);
 }

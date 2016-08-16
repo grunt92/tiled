@@ -7,7 +7,7 @@
 #include "terrain.h"
 #include "dungeondialog.h"
 #include "dungeon.h"
-
+#include <iostream>
 #include <QCoreApplication>
 #include <QDesktopServices>
 
@@ -39,7 +39,22 @@ DungeonDialog::DungeonDialog(QWidget *parent, MainWindow *mw, TerrainDock *td): 
 }
 
 void DungeonDialog::generateDungeon(){
-    dungeon d(100,100);
+    Terrain* floor = nullptr;
+    Terrain* wall = nullptr;
+    int i = QString::localeAwareCompare(mUi->floorBox->currentText(), mUi->wallBox->currentText());
+    //std::cout<<i<<std::endl;
+    for(SharedTileset tileset: mapDocument->map()->getTileSets()){
+    for(Terrain *terrain: tileset->getTerrains()){
+        QString s = terrain->name();
+        int i = QString::localeAwareCompare(s,mUi->floorBox->currentText());
+        if(i==0)
+            floor = terrain;
+        int j = QString::localeAwareCompare(s,mUi->wallBox->currentText());
+        if(j==0)
+            wall = terrain;
+    }
+    }
+    dungeon d(100,100,mainWindow, floor, wall);
     d.generate(30);
     d.print();
 }
