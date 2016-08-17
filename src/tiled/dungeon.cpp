@@ -246,8 +246,11 @@ struct Rect
 
     void dungeon::print()
     {
+
+
         for (float y = 0; y < _height; ++y){
             for(float x = 0; x <_width; ++x){
+                tb->drawByCoordinate(x,y,nullptr);
                 if (getTile(x,y)==1)
                 tb->drawByCoordinate(x,y,floor);
                 else if(getTile(x,y)==2)

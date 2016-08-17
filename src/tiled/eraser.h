@@ -38,14 +38,13 @@ public:
 
     void mousePressed(QGraphicsSceneMouseEvent *event) override;
     void mouseReleased(QGraphicsSceneMouseEvent *event) override;
-
     void languageChanged() override;
 
 protected:
     void tilePositionChanged(const QPoint &tilePos) override;
 
 private:
-    void doErase(bool continuation);
+     void doErase(bool continuation);
     QRect eraseArea() const;
 
     enum Mode {

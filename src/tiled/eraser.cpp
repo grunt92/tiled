@@ -27,6 +27,7 @@
 #include "mapdocument.h"
 #include "mapscene.h"
 #include "tilelayer.h"
+#include <iostream>
 
 using namespace Tiled;
 using namespace Tiled::Internal;
@@ -128,3 +129,6 @@ QRect Eraser::eraseArea() const
 
     return QRect(tilePosition(), QSize(1, 1));
 }
+
+
+
