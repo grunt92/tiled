@@ -7,6 +7,7 @@
 #include "terrain.h"
 #include "dungeondialog.h"
 #include "dungeon.h"
+#include "map.h"
 #include <iostream>
 #include <QCoreApplication>
 #include <QDesktopServices>
@@ -24,38 +25,31 @@ DungeonDialog::DungeonDialog(QWidget *parent, MainWindow *mw, TerrainDock *td): 
     for(SharedTileset tileset: mapDocument->map()->getTileSets()){
         for(Terrain *terrain: tileset->getTerrains()){
             //mUi->comboBox->addItem(terrain.name());
-            QString s = terrain->name();
-            mUi->floorBox->addItem(s);
-            mUi->wallBox->addItem(s);
-
+            terrains.emplace_back(terrain);
         }
+    }
+    for(int i=0; i< terrains.size(); ++i){
+        Terrain* t = terrains.at(i);
+        QString name = t->name();
+        mUi->floorBox->addItem(name);
+        mUi->wallBox->addItem(name);
+
     }
     connect(mUi->OK,SIGNAL(clicked(bool)),SLOT(generateDungeon()));
     connect(mUi->Cancel,SIGNAL(clicked(bool)),SLOT(cancel()));
     connect(mUi->floorBox,SIGNAL(currentTextChanged(QString)),SLOT(checkOK()));
     connect(mUi->wallBox,SIGNAL(currentTextChanged(QString)),SLOT(checkOk()));
+    connect(mUi->spinBox,SIGNAL(valueChanged(int)),SLOT(checkOk()));
     mUi->OK->setEnabled(false);
     checkOk();
 }
 
 void DungeonDialog::generateDungeon(){
-    Terrain* floor = nullptr;
-    Terrain* wall = nullptr;
-    int i = QString::localeAwareCompare(mUi->floorBox->currentText(), mUi->wallBox->currentText());
-    //std::cout<<i<<std::endl;
-    for(SharedTileset tileset: mapDocument->map()->getTileSets()){
-    for(Terrain *terrain: tileset->getTerrains()){
-        QString s = terrain->name();
-        int i = QString::localeAwareCompare(s,mUi->floorBox->currentText());
-        if(i==0)
-            floor = terrain;
-        int j = QString::localeAwareCompare(s,mUi->wallBox->currentText());
-        if(j==0)
-            wall = terrain;
-    }
-    }
-    dungeon d(100,100,mainWindow, floor, wall);
-    d.generate(30);
+    Terrain* floor =  terrains.at(mUi->floorBox->currentIndex());
+    Terrain* wall =  terrains.at(mUi->wallBox->currentIndex());
+    Map* map = mapDocument->map();
+    dungeon d(map->width(),map->height(),mainWindow, floor, wall);
+    d.generate(mUi->spinBox->value());
     d.print();
 }
 
@@ -66,7 +60,8 @@ void DungeonDialog::cancel(){
 void DungeonDialog::checkOk(){
     QString eins = mUi->floorBox->currentText();
     QString zwei = mUi->wallBox->currentText();
-    if(eins.isEmpty()||zwei.isEmpty()){
+    int anzahl = mUi->spinBox->value();
+    if(eins.isEmpty()||zwei.isEmpty()||anzahl<=0){
         mUi->OK->setEnabled(false);
     }else{
         mUi->OK->setEnabled(true);

@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>374</width>
-    <height>150</height>
+    <height>209</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,6 +49,13 @@
         <widget class="QComboBox" name="wallBox"/>
        </item>
       </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_4">
+     <item>
+      <widget class="QSpinBox" name="spinBox"/>
      </item>
     </layout>
    </item>

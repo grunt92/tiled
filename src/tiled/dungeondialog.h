@@ -23,6 +23,7 @@ private:
     TerrainView *terrainView;
     Ui::DungeonDialog *mUi;
     MapDocument *mapDocument;
+    std::vector<Terrain*> terrains;
 private slots:
     void generateDungeon();
     void cancel();

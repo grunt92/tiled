@@ -5,6 +5,7 @@
 #include "terrainbrush.h"
 #include "mainwindow.h"
 #include "terrain.h"
+#include "eraser.h"
 using namespace  Tiled::Internal;
 namespace Tiled
 {
