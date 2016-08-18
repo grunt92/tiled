@@ -540,7 +540,6 @@ void TerrainBrush::drawByCoordinate(float x, float y, Terrain *terrain){
     mLineReferenceX = mPaintX;
     mLineReferenceY = mPaintY;
     QPoint  p(x,y);
-    const QVector<QPoint> lineList(1,p);
-    updateBrush(p, &lineList);
+    updateBrush(p);
     doPaint(true);
 }

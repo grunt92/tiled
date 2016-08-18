@@ -48,9 +48,10 @@ void DungeonDialog::generateDungeon(){
     Terrain* floor =  terrains.at(mUi->floorBox->currentIndex());
     Terrain* wall =  terrains.at(mUi->wallBox->currentIndex());
     Map* map = mapDocument->map();
-    dungeon d(map->width(),map->height(),mainWindow, floor, wall);
+    bool buildcave = mUi->checkBox->isChecked();
+    dungeon d(map->width(),map->height(),mainWindow, floor, wall, buildcave);
     d.generate(mUi->spinBox->value());
-    d.print();
+    d.buildDungeon();
 }
 
 void DungeonDialog::cancel(){

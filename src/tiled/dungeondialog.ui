@@ -57,6 +57,13 @@
      <item>
       <widget class="QSpinBox" name="spinBox"/>
      </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox">
+       <property name="text">
+        <string>Do you want to build a cavelike Dungeon?</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>

@@ -40,9 +40,10 @@ class dungeon{
         Right,
         DirectionCount
     };
-    dungeon (int width, int height, MainWindow* mw, Terrain* floor, Terrain* wall);
+    dungeon (int width, int height, MainWindow* mw, Terrain* floor, Terrain* wall, bool buildCave);
     void generate(int maxFeatures);
-    void print();
+    void buildDungeon();
+    void transformToCave();
 
     private:
     int getTile(int x, int y) const;
@@ -53,6 +54,7 @@ class dungeon{
     bool makeCorridor(int x, int y, Direction dir);
     bool placeRect(const Rect& rect, int tile);
     bool placeObject(int tile);
+    bool buildCave;
     int _width, _height;
     std::vector<int> _tiles;
     std::vector<Rect> _rooms; // rooms for place stairs or monsters

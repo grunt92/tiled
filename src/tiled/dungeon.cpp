@@ -52,7 +52,7 @@ struct Rect
         Right,
         Counter
     };
-    dungeon::dungeon(int width, int height, MainWindow* mw, Tiled::Terrain* floor, Tiled::Terrain* wall)
+    dungeon::dungeon(int width, int height, MainWindow* mw, Tiled::Terrain* floor, Tiled::Terrain* wall, bool buildCave)
         : _width(width)
         , _height(height)
         , mw(mw)
@@ -61,6 +61,7 @@ struct Rect
         , _exits()
         , floor(floor)
         , wall(wall)
+        , buildCave(buildCave)
     {
         tb = mw->getBrush();
 
@@ -244,10 +245,10 @@ struct Rect
         return true;
     }
 
-    void dungeon::print()
+    void dungeon::buildDungeon()
     {
-
-
+        if(buildCave)
+        transformToCave();
         for (float y = 0; y < _height; ++y){
             for(float x = 0; x <_width; ++x){
                 tb->drawByCoordinate(x,y,nullptr);
@@ -255,6 +256,43 @@ struct Rect
                 tb->drawByCoordinate(x,y,floor);
                 else if(getTile(x,y)==2)
                 tb->drawByCoordinate(x,y,wall);
+            }
+        }
+    }
+
+    void dungeon::transformToCave(){
+        for(float y = 0; y < _height; ++y){
+            for(float x = 0; x <_width; ++x){
+                if(getTile(x,y)==2){
+                    if(y == 0||x==0||y==(_height-1)||x==(_width-1)){
+
+                    }else{
+                        bool isOuterWall = false;
+                        if(getTile(x-1,y)==0)
+                            isOuterWall = true;
+                        else if(getTile(x-1,y-1)==0)
+                            isOuterWall = true;
+                        else if(getTile(x,y-1)==0)
+                             isOuterWall = true;
+                        else if(getTile(x+1,y-1)==0)
+                              isOuterWall = true;
+                        else if(getTile(x+1,y)==0)
+                             isOuterWall = true;
+                        else if(getTile(x+1,y+1)==0)
+                             isOuterWall = true;
+                        else if(getTile(x,y+1)==0)
+                             isOuterWall = true;
+                        else if(getTile(x-1,y+1)==0)
+                             isOuterWall = true;
+
+                        if(isOuterWall){
+
+                        }
+                        else{
+                            setTile(x,y,Floor);
+                        }
+                    }
+                }
             }
         }
     }
