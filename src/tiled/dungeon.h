@@ -40,25 +40,26 @@ class dungeon{
         Right,
         DirectionCount
     };
-    dungeon (int width, int height, MainWindow* mw, Terrain* floor, Terrain* wall, bool buildCave);
+    dungeon (int width, int height, MainWindow* mw, Terrain* floor, Terrain* wall, bool buildCave = false, bool corridors = false, int probability = 100, bool corridorsAreRooms = false);
     void generate(int maxFeatures);
     void buildDungeon();
-    void transformToCave();
+
 
     private:
     int getTile(int x, int y) const;
     void setTile(int x, int y, int tile);
-    bool createFeature();
-    bool createFeature(int x, int y, Direction dir);
+    void transformToCave();
+    bool createRoom();
+    bool createRoom(int x, int y, Direction dir);
     bool makeRoom(int x, int y, Direction dir, bool firstRoom = false);
-    bool makeCorridor(int x, int y, Direction dir);
-    bool placeRect(const Rect& rect, int tile);
+    bool makeCorridor(int x, int y, Direction dir, bool firstRoom = false);
+    bool placeRoom(const Rect& rect, int tile);
     bool placeObject(int tile);
-    bool buildCave;
-    int _width, _height;
-    std::vector<int> _tiles;
-    std::vector<Rect> _rooms; // rooms for place stairs or monsters
-    std::vector<Rect> _exits; // 4 sides of rooms or corridors
+    bool buildCave, corridors, corridorsAreRooms;
+    int width, height, probability;
+    std::vector<int> tiles;
+    std::vector<Rect> rooms;
+    std::vector<Rect> exits;
     MainWindow* mw;
     TerrainBrush* tb;
     Terrain* floor, *wall;

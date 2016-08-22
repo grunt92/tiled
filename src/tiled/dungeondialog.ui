@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>374</width>
-    <height>209</height>
+    <height>230</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,12 +55,43 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Number of Rooms/Corridors</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QSpinBox" name="spinBox"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Probability of Room-Spawning</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox_2"/>
      </item>
      <item>
       <widget class="QCheckBox" name="checkBox">
        <property name="text">
-        <string>Do you want to build a cavelike Dungeon?</string>
+        <string>Do you want to build a cavelike dungeon?</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_2">
+       <property name="text">
+        <string>Do you want to have dead ends and corridors?</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_3">
+       <property name="text">
+        <string>Should corridors and dead ends count as rooms?</string>
        </property>
       </widget>
      </item>

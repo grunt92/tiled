@@ -17,14 +17,12 @@ using namespace Tiled::Internal;
 DungeonDialog::DungeonDialog(QWidget *parent, MainWindow *mw, TerrainDock *td): QDialog(parent),mainWindow(mw),  mUi(new Ui::DungeonDialog)
 {
     mUi->setupUi(this);
-    //setupUi(this);
     mainWindow =mw;
     terrainDock = td;
     terrainView = td->getTerrainView();
     mapDocument = td->getMapDocument();
     for(SharedTileset tileset: mapDocument->map()->getTileSets()){
         for(Terrain *terrain: tileset->getTerrains()){
-            //mUi->comboBox->addItem(terrain.name());
             terrains.emplace_back(terrain);
         }
     }
@@ -40,7 +38,12 @@ DungeonDialog::DungeonDialog(QWidget *parent, MainWindow *mw, TerrainDock *td): 
     connect(mUi->floorBox,SIGNAL(currentTextChanged(QString)),SLOT(checkOK()));
     connect(mUi->wallBox,SIGNAL(currentTextChanged(QString)),SLOT(checkOk()));
     connect(mUi->spinBox,SIGNAL(valueChanged(int)),SLOT(checkOk()));
+    connect(mUi->checkBox_2,SIGNAL(clicked(bool)),SLOT(checkProbability()));
+     connect(mUi->checkBox_2,SIGNAL(clicked(bool)),SLOT(checkOk()));
+    connect(mUi->spinBox_2,SIGNAL(valueChanged(int)),SLOT(checkOk()));
     mUi->OK->setEnabled(false);
+    mUi->spinBox_2->setEnabled(false);
+    mUi->checkBox_3->setEnabled(false);
     checkOk();
 }
 
@@ -49,9 +52,18 @@ void DungeonDialog::generateDungeon(){
     Terrain* wall =  terrains.at(mUi->wallBox->currentIndex());
     Map* map = mapDocument->map();
     bool buildcave = mUi->checkBox->isChecked();
-    dungeon d(map->width(),map->height(),mainWindow, floor, wall, buildcave);
-    d.generate(mUi->spinBox->value());
-    d.buildDungeon();
+    bool corridors = mUi->checkBox_2->isChecked();
+    bool cAR = mUi->checkBox_3->isChecked();
+    if(corridors){
+        dungeon d(map->width(),map->height(),mainWindow, floor, wall, buildcave, corridors,mUi->spinBox_2->value(),cAR);
+        d.generate(mUi->spinBox->value());
+        d.buildDungeon();
+    }else{
+        dungeon d(map->width(),map->height(),mainWindow, floor, wall, buildcave, corridors,100,cAR);
+        d.generate(mUi->spinBox->value());
+        d.buildDungeon();
+    }
+
 }
 
 void DungeonDialog::cancel(){
@@ -59,12 +71,23 @@ void DungeonDialog::cancel(){
 }
 
 void DungeonDialog::checkOk(){
-    QString eins = mUi->floorBox->currentText();
-    QString zwei = mUi->wallBox->currentText();
-    int anzahl = mUi->spinBox->value();
-    if(eins.isEmpty()||zwei.isEmpty()||anzahl<=0){
+    QString one = mUi->floorBox->currentText();
+    QString two = mUi->wallBox->currentText();
+    int number = mUi->spinBox->value();
+    if(one.isEmpty()||two.isEmpty()||number<=0){
         mUi->OK->setEnabled(false);
     }else{
         mUi->OK->setEnabled(true);
+    }
+}
+
+void DungeonDialog::checkProbability(){
+    bool corridors = mUi->checkBox_2->isChecked();
+    if(corridors){
+       mUi->spinBox_2->setEnabled(true);
+       mUi->checkBox_3->setEnabled(true);
+    }else{
+       mUi->spinBox_2->setEnabled(false);
+       mUi->checkBox_3->setEnabled(false);
     }
 }

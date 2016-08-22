@@ -160,8 +160,6 @@ QtGuiApplication {
         "dungeondialog.cpp",
         "dungeondialog.h",
         "dungeondialog.ui",
-        "dungeongenerator.cpp",
-        "dungeongenerator.h",
         "editpolygontool.cpp",
         "editpolygontool.h",
         "editterraindialog.cpp",

@@ -28,6 +28,7 @@ private slots:
     void generateDungeon();
     void cancel();
     void checkOk();
+    void checkProbability();
 
 };
 
