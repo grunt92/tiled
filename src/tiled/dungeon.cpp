@@ -77,6 +77,7 @@ struct Room
 //Zum Schluss wird über die Tiles iterriert um diesen den entsprechenden Wert zuzuweisen.
     void dungeon::generate(int maxRooms)
     {
+
         if (corridors)
         {
         if (randomInt(100) < probability)
@@ -104,9 +105,10 @@ struct Room
         {
             if (!createRoom())
             {
-                break;
+                            break;
             }
         }
+       std::cout<<rooms.size()<<std::endl;
 
         for (int& tile : tiles)
         {
@@ -139,21 +141,31 @@ struct Room
 //Schleife dazu dienen neue Räume zu erschaffen, nachdem der Ausgang genutzt wurde wird er aus der Liste der verbliebenen Ausgänge gelöscht.
     bool dungeon::createRoom()
     {
-        for (int i = 0; i < 999; ++i)
+
+
+        for (int i = 0; i < 1000; ++i)
         {
-            if (exits.empty())
+
+            if (exits.empty()){
+
                 return false;
+            }
             int r = randomInt(exits.size());
             int x = randomInt(exits[r].x, exits[r].x + exits[r].width - 1);
             int y = randomInt(exits[r].y, exits[r].y + exits[r].height - 1);
+
             for (int j = 0; j < Counter; ++j)
             {
                 if (createRoom(x, y, static_cast<Direction>(j)))
                 {
                     exits.erase(exits.begin() + r);
+
                     return true;
+
                 }
+
             }
+
         }
 
         return false;
@@ -170,13 +182,13 @@ struct Room
         int dy = 0;
         switch (dir){
         case Up:
-            dy = 1;
+            dy = +1;
             break;
         case Down:
             dy = -1;
             break;
         case Left:
-            dx = 1;
+            dx = +1;
             break;
         case Right:
             dx = -1;
@@ -223,7 +235,6 @@ struct Room
         Rect room;
         room.width = randomInt(minRoomSize, maxRoomSize);
         room.height = randomInt(minRoomSize, maxRoomSize);
-
         switch (dir){
         case (Up):
             room.x = x - room.width / 2;
@@ -276,66 +287,47 @@ struct Room
             corridor.x = x;
             corridor.y = y;
 
-            if (randomBool())
-            {
+
                 corridor.width = randomInt(minCorridorLength, maxCorridorLength);
                 corridor.height = 1;
                 switch(dir){
                 case Up:
-                    corridor.y = y - 1;
-                    if (randomBool())
-                        corridor.x = x - corridor.width + 1;
-                    break;
-
-                case Down:
-                    corridor.y = y + 1;
-
-                    if (randomBool())
-                        corridor.x = x - corridor.width + 1;
-                    break;
-
-                case Left:
-                    corridor.x = x - corridor.width;
-                    break;
-
-                case Right:
-                    corridor.x = x + 1;
-                    break;
-                }
-            }
-
-            else
-            {
-                corridor.width = 1;
-                corridor.height = randomInt(minCorridorLength, maxCorridorLength);
-                switch (dir){
-                case Up:
+                    corridor.width = 1;
+                    corridor.height = randomInt(minCorridorLength, maxCorridorLength);
                     corridor.y = y - corridor.height;
                     break;
 
                 case Down:
+                    corridor.width = 1;
+                    corridor.height = randomInt(minCorridorLength, maxCorridorLength);
                     corridor.y = y + 1;
                     break;
 
                 case Left:
-                    corridor.x = x - 1;
-                    if (randomBool())
-                        corridor.y = y - corridor.height + 1;
+                    corridor.width = randomInt(minCorridorLength, maxCorridorLength);
+                    corridor.height = 1;
+                    corridor.x = x - corridor.width;
                     break;
 
                 case Right:
+                    corridor.width = randomInt(minCorridorLength, maxCorridorLength);
+                    corridor.height = 1;
                     corridor.x = x + 1;
-                    if (randomBool())
-                        corridor.y = y - corridor.height + 1;
                     break;
                 }
-            }
+
             if (placeRoom(corridor, Floor))
                     {
-                        if (dir != Down && corridor.width != 1||firstRoom)
-                            exits.emplace_back(Rect{ corridor.x, corridor.y - 1, corridor.width, 1 });
-                        if (dir != Up && corridor.width != 1||firstRoom)
-                            exits.emplace_back(Rect{ corridor.x, corridor.y + corridor.height, corridor.width, 1 });
+                        // if (dir != Down && dir != Up && corridor.width !=1)
+                        //   exits.emplace_back(Rect{ corridor.x, corridor.y - 1, corridor.width, 1 });
+                        //    exits.emplace_back(Rect{ corridor.x, corridor.y + corridor.height, corridor.width, 1 });
+                       if (dir != Down && corridor.width != 1||firstRoom)
+                           exits.emplace_back(Rect{ corridor.x, corridor.y - 1, corridor.width, 1 });
+                       if (dir != Up && corridor.width != 1||firstRoom)
+                           exits.emplace_back(Rect{ corridor.x, corridor.y + corridor.height, corridor.width, 1 });
+                       //if (dir != Right && dir != Left && corridor.height != 1)
+                       //    exits.emplace_back(Rect{ corridor.x - 1, corridor.y, 1, corridor.height });
+                       //    exits.emplace_back(Rect{ corridor.x + corridor.width, corridor.y, 1, corridor.height });
                         if (dir != Right && corridor.height != 1||firstRoom)
                             exits.emplace_back(Rect{ corridor.x - 1, corridor.y, 1, corridor.height });
                         if (dir != Left && corridor.height != 1||firstRoom)
