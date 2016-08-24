@@ -165,6 +165,8 @@ struct Room
                 }
 
             }
+            exits.erase(exits.begin() + r);
+
 
         }
 
