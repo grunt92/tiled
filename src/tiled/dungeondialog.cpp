@@ -11,6 +11,18 @@
 #include <iostream>
 #include <QCoreApplication>
 #include <QDesktopServices>
+#include <random>
+
+
+    std::random_device rd;
+    std::mt19937 mt(rd());
+
+    int randomInt(int exclusiveMax)
+    {
+        std::uniform_int_distribution<> dist(0, exclusiveMax - 1);
+        return dist(mt);
+    }
+
 
 using namespace Tiled::Internal;
 
@@ -44,6 +56,8 @@ DungeonDialog::DungeonDialog(QWidget *parent, MainWindow *mw, TerrainDock *td): 
     mUi->OK->setEnabled(false);
     mUi->spinBox_2->setEnabled(false);
     mUi->checkBox_3->setEnabled(false);
+    int num = randomInt(99);
+    mUi->spinBox_3->setValue(num);
     checkOk();
 }
 
@@ -55,12 +69,13 @@ void DungeonDialog::generateDungeon(){
     bool corridors = mUi->checkBox_2->isChecked();
     bool cAR = mUi->checkBox_3->isChecked();
     bool fill = mUi->checkBox_4->isChecked();
+    int number = mUi->spinBox_3->value();
     if(corridors){
-        dungeon d(map->width(),map->height(),mainWindow, floor, wall, buildcave, corridors,mUi->spinBox_2->value(),cAR,fill);
+        dungeon d(map->width(),map->height(),mainWindow, floor, wall, buildcave, corridors,mUi->spinBox_2->value(),cAR,fill,number);
         d.generate(mUi->spinBox->value());
         d.buildDungeon();
     }else{
-        dungeon d(map->width(),map->height(),mainWindow, floor, wall, buildcave, corridors,100,cAR, fill);
+        dungeon d(map->width(),map->height(),mainWindow, floor, wall, buildcave, corridors,100,cAR, fill,number);
         d.generate(mUi->spinBox->value());
         d.buildDungeon();
     }

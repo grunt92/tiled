@@ -6,30 +6,24 @@
 #include "terrain.h"
 #include <iostream>
 using namespace  Tiled::Internal;
-namespace
+
+// *Really* minimal PCG32 code / (c) 2014 M.E. O'Neill / pcg-random.org
+// Licensed under Apache License 2.0 (NO WARRANTY, etc. see website)
+//typedef struct { uint64_t state;  uint64_t inc; } pcg32_random_t;
+
+uint32_t pcg32_random_r(pcg32_random_t& rng)
 {
-//Die folgenden Funktionen werden benötigt um zufällige Zahlen bzw. einen zufälligen Boolean zu erzeugen.
-    std::random_device rd;
-    std::mt19937 mt(rd());
-
-    int randomInt(int exclusiveMax)
-    {
-        std::uniform_int_distribution<> dist(0, exclusiveMax - 1);
-        return dist(mt);
-    }
-
-    int randomInt(int min, int max)
-    {
-        std::uniform_int_distribution<> dist(0, max - min);
-        return dist(mt) + min;
-    }
-
-    bool randomBool(double probability = 0.5)
-    {
-        std::bernoulli_distribution dist(probability);
-        return dist(mt);
-    }
+    uint64_t oldstate = rng.state;
+    // Advance internal state
+    rng.state = oldstate * 6364136223846793005ULL + (rng.inc|1);
+    // Calculate output function (XSH RR), uses old state for max ILP
+    uint32_t xorshifted = ((oldstate >> 18u) ^ oldstate) >> 27u;
+    uint32_t rot = oldstate >> 59u;
+    return (xorshifted >> rot) | (xorshifted << ((-rot) & 31));
 }
+
+
+
 
 //Praktisch gesehen nichts weiter als ein Rechteck mit Position und Größe
 struct Room
@@ -55,7 +49,7 @@ struct Room
         Counter
     };
 //Construktor der Klasse
-    dungeon::dungeon(int width, int height, MainWindow* mw, Tiled::Terrain* floor, Tiled::Terrain* wall, bool buildCave, bool corridors, int probability, bool corridorsAreRooms, bool fill)
+    dungeon::dungeon(int width, int height, MainWindow* mw, Tiled::Terrain* floor, Tiled::Terrain* wall, bool buildCave, bool corridors, int probability, bool corridorsAreRooms, bool fill, int number)
         : width(width)
         , height(height)
         , mw(mw)
@@ -68,9 +62,14 @@ struct Room
         , probability(probability)
         , corridorsAreRooms(corridorsAreRooms)
         , fill(fill)
-
     {
         tb = mw->getBrush();
+        pcg32_random_t random;
+        random.inc = number;
+        random.state = number;
+        seed = random;
+        minRoomSize = 3;
+        maxRoomSize = 5;
 
     }
 //Eigentliche Generierung des Dungeons, zuerst wird ein Raum angelegt, sollte dies nicht möglich sein wird das Programm abgebrochen,
@@ -153,8 +152,8 @@ struct Room
                 return false;
             }
             int r = randomInt(exits.size());
-            int x = randomInt(exits[r].x, exits[r].x + exits[r].width - 1);
-            int y = randomInt(exits[r].y, exits[r].y + exits[r].height - 1);
+            int x = randomInt(exits[r].x, exits[r].x + exits[r].width);
+            int y = randomInt(exits[r].y, exits[r].y + exits[r].height);
 
             for (int j = 0; j < Counter; ++j)
             {
@@ -233,12 +232,14 @@ struct Room
 //Welche Richtung als Parameter übergeben wurde, um anhand dessen den Ursprungspunkt für den Raum zu bestimmen. Nachdem der Raum mit placeRoom platziert wurde,
 //Werden anschließend die neu entstandenen freien Ausgänge dem Vektor hinzugefügt
     bool dungeon::makeRoom(int x, int y, Direction dir, bool firstRoom){
-        static const int minRoomSize = 3;
-        static const int maxRoomSize = 5+((std::min(width,height))/20);
+
+        std::cout<<minRoomSize<<std::endl;
+         std::cout<<maxRoomSize<<std::endl;
 
         Rect room;
         room.width = randomInt(minRoomSize, maxRoomSize);
         room.height = randomInt(minRoomSize, maxRoomSize);
+
         switch (dir){
         case (Up):
             room.x = x - room.width / 2;
@@ -286,37 +287,35 @@ struct Room
 //Das gleiche Prinzip wie bei der Funktion makeRoom, nur dass zusätzlich durch die randomBool-Methode entschieden wird, ob der Korridor vertikal oder horizontal verlaufen soll.
     bool dungeon::makeCorridor(int x, int y, Direction dir, bool firstRoom)
         {
-            static const int minCorridorLength = 3;
-            static const int maxCorridorLength = 5+((std::min(width,height))/20);
 
             Rect corridor;
             corridor.x = x;
             corridor.y = y;
 
 
-                corridor.width = randomInt(minCorridorLength, maxCorridorLength);
+                corridor.width = randomInt(minRoomSize, maxRoomSize);
                 corridor.height = 1;
                 switch(dir){
                 case Up:
                     corridor.width = 1;
-                    corridor.height = randomInt(minCorridorLength, maxCorridorLength);
+                    corridor.height = randomInt(minRoomSize, maxRoomSize);
                     corridor.y = y - corridor.height;
                     break;
 
                 case Down:
                     corridor.width = 1;
-                    corridor.height = randomInt(minCorridorLength, maxCorridorLength);
+                    corridor.height = randomInt(minRoomSize, maxRoomSize);
                     corridor.y = y + 1;
                     break;
 
                 case Left:
-                    corridor.width = randomInt(minCorridorLength, maxCorridorLength);
+                    corridor.width = randomInt(minRoomSize, maxRoomSize);
                     corridor.height = 1;
                     corridor.x = x - corridor.width;
                     break;
 
                 case Right:
-                    corridor.width = randomInt(minCorridorLength, maxCorridorLength);
+                    corridor.width = randomInt(minRoomSize, maxRoomSize);
                     corridor.height = 1;
                     corridor.x = x + 1;
                     break;
@@ -394,7 +393,6 @@ struct Room
                 }
 
 
-
             }}
 
 //Die Funktion itteriert über alle Tiles des Layers, die Randtiles des Layers werden in Ruhe gelassen. Bei WandTiles die sich nicht am Rand des Layers befinden wird überprüft,
@@ -429,6 +427,24 @@ struct Room
                 }
             }
         }
+
+
+    unsigned int dungeon::randomInt(int exclusiveMax)
+    {
+
+     unsigned int result = pcg32_random_r(seed)%exclusiveMax;
+
+     return result;
+    }
+
+    unsigned int dungeon::randomInt(int min, int max)
+    {
+        int dist = (max - min);
+
+        unsigned int result = pcg32_random_r(seed)%dist;
+
+        return (min + result);
+    }
 
 
 
