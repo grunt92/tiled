@@ -54,12 +54,13 @@ void DungeonDialog::generateDungeon(){
     bool buildcave = mUi->checkBox->isChecked();
     bool corridors = mUi->checkBox_2->isChecked();
     bool cAR = mUi->checkBox_3->isChecked();
+    bool fill = mUi->checkBox_4->isChecked();
     if(corridors){
-        dungeon d(map->width(),map->height(),mainWindow, floor, wall, buildcave, corridors,mUi->spinBox_2->value(),cAR);
+        dungeon d(map->width(),map->height(),mainWindow, floor, wall, buildcave, corridors,mUi->spinBox_2->value(),cAR,fill);
         d.generate(mUi->spinBox->value());
         d.buildDungeon();
     }else{
-        dungeon d(map->width(),map->height(),mainWindow, floor, wall, buildcave, corridors,100,cAR);
+        dungeon d(map->width(),map->height(),mainWindow, floor, wall, buildcave, corridors,100,cAR, fill);
         d.generate(mUi->spinBox->value());
         d.buildDungeon();
     }

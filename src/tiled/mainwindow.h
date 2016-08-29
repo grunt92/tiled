@@ -52,6 +52,7 @@ class BucketFillTool;
 class CommandButton;
 class DocumentManager;
 class Dungeon;
+class DungeonDialog;
 class LayerDock;
 class MapDocumentActionHandler;
 class MapScene;

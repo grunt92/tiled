@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>374</width>
-    <height>230</height>
+    <height>253</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -92,6 +92,13 @@
       <widget class="QCheckBox" name="checkBox_3">
        <property name="text">
         <string>Should corridors and dead ends count as rooms?</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_4">
+       <property name="text">
+        <string>Should empty Space be filled with the wall tiles? </string>
        </property>
       </widget>
      </item>

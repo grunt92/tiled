@@ -40,7 +40,7 @@ class dungeon{
         Right,
         DirectionCount
     };
-    dungeon (int width, int height, MainWindow* mw, Terrain* floor, Terrain* wall, bool buildCave = false, bool corridors = false, int probability = 100, bool corridorsAreRooms = false);
+    dungeon (int width, int height, MainWindow* mw, Terrain* floor, Terrain* wall, bool buildCave = false, bool corridors = false, int probability = 100, bool corridorsAreRooms = false, bool fill=false);
     void generate(int maxFeatures);
     void buildDungeon();
 
@@ -55,7 +55,7 @@ class dungeon{
     bool makeCorridor(int x, int y, Direction dir, bool firstRoom = false);
     bool placeRoom(const Rect& rect, int tile);
     bool placeObject(int tile);
-    bool buildCave, corridors, corridorsAreRooms;
+    bool buildCave, corridors, corridorsAreRooms, fill;
     int width, height, probability;
     std::vector<int> tiles;
     std::vector<Rect> rooms;

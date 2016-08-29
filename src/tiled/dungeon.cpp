@@ -55,7 +55,7 @@ struct Room
         Counter
     };
 //Construktor der Klasse
-    dungeon::dungeon(int width, int height, MainWindow* mw, Tiled::Terrain* floor, Tiled::Terrain* wall, bool buildCave, bool corridors, int probability, bool corridorsAreRooms)
+    dungeon::dungeon(int width, int height, MainWindow* mw, Tiled::Terrain* floor, Tiled::Terrain* wall, bool buildCave, bool corridors, int probability, bool corridorsAreRooms, bool fill)
         : width(width)
         , height(height)
         , mw(mw)
@@ -67,6 +67,7 @@ struct Room
         , corridors(corridors)
         , probability(probability)
         , corridorsAreRooms(corridorsAreRooms)
+        , fill(fill)
 
     {
         tb = mw->getBrush();
@@ -96,10 +97,12 @@ struct Room
          }
         }
         else{
-        if (!makeRoom(width / 2, height / 2, static_cast<Direction>(randomInt(4), true)))
+        if (!makeRoom(width / 2, height / 2, static_cast<Direction>(randomInt(4)), true))
         {
+
             return;
         }
+
         }
        while(rooms.size()< maxRooms)
         {
@@ -108,7 +111,6 @@ struct Room
                             break;
             }
         }
-       std::cout<<rooms.size()<<std::endl;
 
         for (int& tile : tiles)
         {
@@ -165,7 +167,7 @@ struct Room
                 }
 
             }
-            exits.erase(exits.begin() + r);
+
 
 
         }
@@ -232,7 +234,7 @@ struct Room
 //Werden anschließend die neu entstandenen freien Ausgänge dem Vektor hinzugefügt
     bool dungeon::makeRoom(int x, int y, Direction dir, bool firstRoom){
         static const int minRoomSize = 3;
-        static const int maxRoomSize = 6;
+        static const int maxRoomSize = 5+((std::min(width,height))/20);
 
         Rect room;
         room.width = randomInt(minRoomSize, maxRoomSize);
@@ -261,14 +263,16 @@ struct Room
         }
         if (placeRoom(room, Floor))
         {
-            exits.emplace_back(room);
 
             if (dir != Down || firstRoom)
                 exits.emplace_back(Rect{ room.x, room.y - 1, room.width, 1 });
+
             if (dir != Up || firstRoom)
                 exits.emplace_back(Rect{ room.x, room.y + room.height, room.width, 1 });
+
             if (dir != Right || firstRoom)
                 exits.emplace_back(Rect{ room.x - 1, room.y, 1, room.height });
+
             if (dir != Left || firstRoom)
                 exits.emplace_back(Rect{ room.x + room.width, room.y, 1, room.height });
 
@@ -283,7 +287,7 @@ struct Room
     bool dungeon::makeCorridor(int x, int y, Direction dir, bool firstRoom)
         {
             static const int minCorridorLength = 3;
-            static const int maxCorridorLength = 6;
+            static const int maxCorridorLength = 5+((std::min(width,height))/20);
 
             Rect corridor;
             corridor.x = x;
@@ -320,16 +324,11 @@ struct Room
 
             if (placeRoom(corridor, Floor))
                     {
-                        // if (dir != Down && dir != Up && corridor.width !=1)
-                        //   exits.emplace_back(Rect{ corridor.x, corridor.y - 1, corridor.width, 1 });
-                        //    exits.emplace_back(Rect{ corridor.x, corridor.y + corridor.height, corridor.width, 1 });
+
                        if (dir != Down && corridor.width != 1||firstRoom)
                            exits.emplace_back(Rect{ corridor.x, corridor.y - 1, corridor.width, 1 });
                        if (dir != Up && corridor.width != 1||firstRoom)
                            exits.emplace_back(Rect{ corridor.x, corridor.y + corridor.height, corridor.width, 1 });
-                       //if (dir != Right && dir != Left && corridor.height != 1)
-                       //    exits.emplace_back(Rect{ corridor.x - 1, corridor.y, 1, corridor.height });
-                       //    exits.emplace_back(Rect{ corridor.x + corridor.width, corridor.y, 1, corridor.height });
                         if (dir != Right && corridor.height != 1||firstRoom)
                             exits.emplace_back(Rect{ corridor.x - 1, corridor.y, 1, corridor.height });
                         if (dir != Left && corridor.height != 1||firstRoom)
@@ -379,14 +378,25 @@ struct Room
         transformToCave();
         for (float y = 0; y < height; ++y){
             for(float x = 0; x <width; ++x){
-                tb->drawByCoordinate(x,y,nullptr);
-                if (getTile(x,y)==1)
-                tb->drawByCoordinate(x,y,floor);
-                else if(getTile(x,y)==2)
-                tb->drawByCoordinate(x,y,wall);
+                if(fill)
+                     tb->drawByCoordinate(x,y,wall);
+                else
+                    tb->drawByCoordinate(x,y,nullptr);
             }
         }
-    }
+
+        for (float y = 0; y < height; ++y){
+            for(float x = 0; x <width; ++x){
+                if (getTile(x,y)==1)
+                tb->drawByCoordinate(x,y,floor);
+                if(getTile(x,y)==2)
+                    tb->drawByCoordinate(x,y,wall);
+                }
+
+
+
+            }}
+
 //Die Funktion itteriert über alle Tiles des Layers, die Randtiles des Layers werden in Ruhe gelassen. Bei WandTiles die sich nicht am Rand des Layers befinden wird überprüft,
 //ob es sich bei Ihnen um Tiles handelt, die das Dungeon abgrenzen, also ob eines ihrer Nachbartiles leer ist, ist dies nicht der Fall wird das Tile auf 1 also auf ein Bodentile umgesetzt.
     void dungeon::transformToCave(){
