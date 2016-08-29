@@ -56,7 +56,7 @@ DungeonDialog::DungeonDialog(QWidget *parent, MainWindow *mw, TerrainDock *td): 
     mUi->OK->setEnabled(false);
     mUi->spinBox_2->setEnabled(false);
     mUi->checkBox_3->setEnabled(false);
-    int num = randomInt(99);
+    int num = randomInt(1000000);
     mUi->spinBox_3->setValue(num);
     checkOk();
 }
